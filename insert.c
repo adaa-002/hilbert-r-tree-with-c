@@ -7,9 +7,9 @@
 #define M 4
 #define m 2
 
-int *convertToBinary(int number)
+int *convertToBinary(int number) //tested
 {
-    int binary[8];
+    int* binary= (int*)malloc(8*sizeof(int));
     int bin = 0, i = 1, rem = 0;
     while (number != 0)
     {
@@ -20,7 +20,7 @@ int *convertToBinary(int number)
     }
     for (int i = 7; i >= 0; i--)
     {
-        if (bin = 0)
+        if (bin == 0)
         {
             binary[i] = 0;
         }
@@ -32,9 +32,9 @@ int *convertToBinary(int number)
     return binary;
 }
 
-int *createInterleaf(int x_binary[8], int y_binary[8])
+int *createInterleaf(int x_binary[8], int y_binary[8]) //tested
 {
-    int interleafBinary[16];
+    int* interleafBinary= (int*)malloc(16*sizeof(int));
 
     for (int i = 0; i < 16; i++)
     {
@@ -44,7 +44,7 @@ int *createInterleaf(int x_binary[8], int y_binary[8])
         }
         if (i % 2 == 1)
         {
-            interleafBinary[i] = x_binary[i / 2];
+            interleafBinary[i] = y_binary[i / 2];
         }
     }
     return interleafBinary;
@@ -68,10 +68,11 @@ void FindHilbertValue(Rect rectangle)
     int x_mid = (rectangle.xh + rectangle.xl) / 2;
     int y_mid = (rectangle.yh + rectangle.yl) / 2;
 
-    int x_binary[8] = convertToBinary(x_mid);
-    int y_binary[8] = convertToBinary(y_mid);
+    // malloc???
+    int *x_binary = convertToBinary(x_mid);
+    int *y_binary = convertToBinary(y_mid);
 
-    int interleaf[16] = createInterleaf(x_binary, y_binary);
+    int *interleaf = createInterleaf(x_binary, y_binary);
 
     int hilbertValue = convertToDecimal(interleaf);
 
@@ -84,4 +85,33 @@ void chooseLeaf(Rect rectangle)
 
 void insert(RTreeNode root, Rect newRectangle)
 {
+}
+
+int main()
+{
+    int number1 = 15;
+    int *test1 = convertToBinary(number1);
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d ", test1[i]);
+    }
+    printf("\n");
+    int number2 = 0;
+    int *test2 = convertToBinary(number2);
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d ", test2[i]);
+    }
+    printf("\n");
+
+    int *interleaf = createInterleaf(test1, test2);
+    for (int i = 0; i < 16; i++)
+    {
+        printf("%d ", interleaf[i]);
+    }
+    printf("\n");
+
+    int hilbertValue = convertToDecimal(interleaf);
+    printf("%d ", hilbertValue);
+    printf("\n");
 }
