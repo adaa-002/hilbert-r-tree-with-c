@@ -61,3 +61,5 @@ typedef struct rTree
     int split_distribution;
     // height
 } RTree;
+
+RTree tree;

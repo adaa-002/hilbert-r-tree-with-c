@@ -80,8 +80,25 @@ void FindHilbertValue(Rect rectangle)
     rectangle.hilbertValue = hilbertValue;
 }
 
-void chooseLeaf(Rect rectangle)
+leafNode chooseLeaf(Rect rectangle) //scope?
 {
+    //if the tree is empty
+    // set n to a leaf and return
+
+    // else set N 
+
+    //malloc
+    RTreeNode N = tree.root;
+
+    if (N.isLeaf){
+        leafNode N1;
+        N1.max_hv=N.max_hv;
+        N1.pt;
+        N1.rect=N.rect;
+        
+        return N1;
+    }
+
 
 }
 
