@@ -21,7 +21,7 @@ typedef struct rect
 typedef struct rTreeNode
 {
     int max_hv;
-    Rect rect;
+    Rect* rects;
     bool isLeaf;
     //next?
     union
@@ -39,14 +39,14 @@ typedef struct internalNode
 {
     int max_hv;
     Rect rect;                  
-    struct rTreeNode *child[M]; 
+    struct rTreeNode *child; //hello
     struct rTreeNode *next;
     bool isLeaf; // level
-    // numchildren
+    int numchildren;
     // tuple id
     // parent
 
-} internalNode;
+} InternalNode;
 
 typedef struct leafNode
 {

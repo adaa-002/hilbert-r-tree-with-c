@@ -79,8 +79,11 @@ void FindHilbertValue(Rect rectangle)
 
     rectangle.hilbertValue = hilbertValue;
 }
+RTreeNode find_LHV(int hilbertValue) //TO-DO
+{
 
-leafNode chooseLeaf(Rect rectangle) //scope?
+}
+RTreeNode chooseLeaf(Rect rectangle) //scope?
 {
     //if the tree is empty
     // set n to a leaf and return
@@ -90,20 +93,27 @@ leafNode chooseLeaf(Rect rectangle) //scope?
     //malloc
     RTreeNode N = tree.root;
 
-    if (N.isLeaf){
-        leafNode N1;
-        N1.max_hv=N.max_hv;
-        N1.pt;
-        N1.rect=N.rect;
-        
-        return N1;
+    do
+    {
+        if (N.isLeaf){
+        return N;
     }
-
-
+    else
+    {
+        RTreeNode temp = find_LHV(rectangle.hilbertValue);
+        RTreeNode *newChild=(RTreeNode*)malloc(sizeof(RTreeNode));
+        
+        N.data.internal.child[N.data.internal.numchildren] =temp.data.internal.child ; //not 0
+        N.data.internal.numchildren++; //idk when leaf lol
+    }
+    }while(!N.isLeaf);
+    return N;
 }
 
 void insert(RTreeNode root, Rect newRectangle)
 {
+    RTreeNode L = chooseLeaf (newRectangle); //malloc?
+    
 }
 
 // testing
