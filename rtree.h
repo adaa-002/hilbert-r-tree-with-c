@@ -15,17 +15,34 @@ typedef struct rect
 {
     int xh, yh, xl, yl;
     int hilbertValue;
-    Rect *next;
+    struct rect *next;
 } Rect;
 
 typedef struct rTreeNode
 {
     int max_hv;
-    Rect *rect;
-    RTreeNode *child;
-    RTreeNode *next;
+    Rect rect;        // redundant?
+    struct rTreeNode *child; // array
+    struct rTreeNode *next;
+    bool leaf; // level
+    // numchildren
+    // tuple id
+    // parent
+
 } RTreeNode;
 
+// root struct
+typedef struct rTreeRoot{
+    int max_hv;
+    Rect rect;        // redundant?
+    struct rTreeNode *child; // array
+    bool leaf; // level
+    // numchildren
+    // tuple id
+    // parent
+}RTreeRoot;
+
+// bad idea ??? but datapoint
 typedef struct rTreeLeaf
 {
     int max_hv;
@@ -38,4 +55,5 @@ typedef struct rTree
     RTreeNode *root;
     int num_nodes;
     int split_distribution;
-}RTree;
+    // height
+} RTree;
