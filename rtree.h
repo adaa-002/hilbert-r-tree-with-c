@@ -32,15 +32,15 @@ typedef struct rTreeNode
 } RTreeNode;
 
 // root struct
-typedef struct rTreeRoot{
-    int max_hv;
-    Rect rect;        // redundant?
-    struct rTreeNode *child; // array
-    bool leaf; // level
-    // numchildren
-    // tuple id
-    // parent
-}RTreeRoot;
+// typedef struct rTreeRoot{
+//     int max_hv;
+//     Rect rect;        // redundant?
+//     struct rTreeNode *child; // array
+//     bool leaf; // level
+//     // numchildren
+//     // tuple id
+//     // parent
+// }RTreeRoot;
 
 // bad idea ??? but datapoint
 typedef struct rTreeLeaf

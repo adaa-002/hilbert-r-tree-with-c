@@ -50,7 +50,7 @@ int *createInterleaf(int x_binary[8], int y_binary[8]) //tested
     return interleafBinary;
 }
 
-int convertToDecimal(int *interleaf)
+int convertToDecimal(int *interleaf) //tested
 {
     int hilbertValue = 0;
     for (int i = 15; i >= 0; i--)
@@ -68,7 +68,8 @@ void FindHilbertValue(Rect rectangle)
     int x_mid = (rectangle.xh + rectangle.xl) / 2;
     int y_mid = (rectangle.yh + rectangle.yl) / 2;
 
-    // malloc???
+    //malloc not needed?
+
     int *x_binary = convertToBinary(x_mid);
     int *y_binary = convertToBinary(y_mid);
 
@@ -81,37 +82,40 @@ void FindHilbertValue(Rect rectangle)
 
 void chooseLeaf(Rect rectangle)
 {
+
 }
 
 void insert(RTreeNode root, Rect newRectangle)
 {
 }
 
-int main()
-{
-    int number1 = 15;
-    int *test1 = convertToBinary(number1);
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%d ", test1[i]);
-    }
-    printf("\n");
-    int number2 = 0;
-    int *test2 = convertToBinary(number2);
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%d ", test2[i]);
-    }
-    printf("\n");
+// testing
 
-    int *interleaf = createInterleaf(test1, test2);
-    for (int i = 0; i < 16; i++)
-    {
-        printf("%d ", interleaf[i]);
-    }
-    printf("\n");
+// int main()
+// {
+//     int number1 = 15;
+//     int *test1 = convertToBinary(number1);
+//     for (int i = 0; i < 8; i++)
+//     {
+//         printf("%d ", test1[i]);
+//     }
+//     printf("\n");
+//     int number2 = 0;
+//     int *test2 = convertToBinary(number2);
+//     for (int i = 0; i < 8; i++)
+//     {
+//         printf("%d ", test2[i]);
+//     }
+//     printf("\n");
 
-    int hilbertValue = convertToDecimal(interleaf);
-    printf("%d ", hilbertValue);
-    printf("\n");
-}
+//     int *interleaf = createInterleaf(test1, test2);
+//     for (int i = 0; i < 16; i++)
+//     {
+//         printf("%d ", interleaf[i]);
+//     }
+//     printf("\n");
+
+//     int hilbertValue = convertToDecimal(interleaf);
+//     printf("%d ", hilbertValue);
+//     printf("\n");
+// }
