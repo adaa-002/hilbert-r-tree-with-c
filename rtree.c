@@ -6,3 +6,5 @@
 #include "rtree.h"
 #define M 4
 #define m 2
+
+RTree tree;

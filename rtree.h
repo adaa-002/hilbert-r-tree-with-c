@@ -21,38 +21,42 @@ typedef struct rect
 typedef struct rTreeNode
 {
     int max_hv;
-    Rect rect;        // redundant?
-    struct rTreeNode *child; // array
+    Rect rect;
+    bool isLeaf;
+    //next?
+    union
+    {
+        LeafNode leaf;
+        InternalNode internal;
+    } data;
+   
+    // numchildren
+    // tuple id
+    // parent
+} RTreeNode;
+
+typedef struct internalNode
+{
+    int max_hv;
+    Rect rect;                  
+    struct rTreeNode *child[M]; 
     struct rTreeNode *next;
-    bool leaf; // level
+    bool isLeaf; // level
     // numchildren
     // tuple id
     // parent
 
-} RTreeNode;
+} internalNode;
 
-// root struct
-// typedef struct rTreeRoot{
-//     int max_hv;
-//     Rect rect;        // redundant?
-//     struct rTreeNode *child; // array
-//     bool leaf; // level
-//     // numchildren
-//     // tuple id
-//     // parent
-// }RTreeRoot;
-
-// bad idea ??? but datapoint
-typedef struct rTreeLeaf
+typedef struct leafNode
 {
     int max_hv;
-    Rect *rect;
-    Point *pt;
-} RTreeLeaf;
+    Rect rect;
+} LeafNode;
 
 typedef struct rTree
 {
-    RTreeNode *root;
+    RTreeNode root; // ptr?
     int num_nodes;
     int split_distribution;
     // height
