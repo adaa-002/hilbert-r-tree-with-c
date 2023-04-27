@@ -2,34 +2,108 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
-struct Point
+typedef struct point
 {
     int x, y;
-};
+} Point;
 
-struct Rect
+typedef struct rect
 {
     int xh, yh, xl, yl;
-};
-struct RTreeNode
+} Rect;
+
+typedef struct rTreeNode
 {
     int no_of_entries;
     int *hil_values;
     int max_hv;
-    struct Rect rect;
-    struct RTreeNode *child;
-};
+    Rect rect;
+    RTreeNode *child;
+} RTreeNode;
 
-struct RTreeLeaf
+typedef struct rTreeLeaf
 {
     int no_of_entries;
     int *hil_values;
     int max_hv;
-    struct Rect rect;
-    struct Point *pt;
-};
+    Rect rect;
+    Point *pt;
+} RTreeLeaf;
 
+int *convertToBinary(int number)
+{
+    int binary[8];
+    int bin = 0, i = 1, rem = 0;
+    while (number != 0)
+    {
+        rem = number % 2;
+        number /= 2;
+        bin += rem * i;
+        i *= 10;
+    }
+    for (int i = 7; i >= 0; i--)
+    {
+        if (bin = 0)
+        {
+            binary[i] = 0;
+        }
+
+        binary[i] = bin % 10;
+        bin /= 10;
+    }
+
+    return binary;
+}
+
+int *createInterleaf(int x_binary[8], int y_binary[8])
+{
+    int interleafBinary[16];
+
+    for (int i = 0; i < 16; i++)
+    {
+        if (i % 2 == 0)
+        {
+            interleafBinary[i] = x_binary[i / 2];
+        }
+        if (i % 2 == 1)
+        {
+            interleafBinary[i] = x_binary[i / 2];
+        }
+    }
+    return interleafBinary;
+}
+
+int convertToDecimal(int *interleaf)
+{
+    int hilbertValue = 0;
+    for (int i = 15; i >= 0; i--)
+    {
+        if (interleaf[i] == 1)
+        {
+            hilbertValue += pow(2, 15 - i);
+        }
+    }
+    return hilbertValue;
+}
+
+int FindHilbertValue(Rect rectangle)
+{
+    int x_mid = (rectangle.xh + rectangle.xl) / 2;
+    int y_mid = (rectangle.yh + rectangle.yl) / 2;
+
+    int x_binary[8] = convertToBinary(x_mid);
+    int y_binary[8] = convertToBinary(y_mid);
+
+    int interleaf[16] = createInterleaf(x_binary, y_binary);
+
+    int hilbertValue = convertToDecimal(interleaf);
+}
+
+void insert(RTreeNode root, Rect newRectangle)
+{
+}
 
 int main()
 {
@@ -47,8 +121,8 @@ int main()
     int x_coords[21];
     int y_coords[21];
     int num = 0;
-    int x,y;
-    while (fscanf(fp, "%d %d", &x, &y) == 2 && num <= 20) //x y not defined yet
+    int x, y;
+    while (fscanf(fp, "%d %d", &x, &y) == 2 && num <= 20)
     {
         x_coords[num] = x;
         y_coords[num] = y;
@@ -80,5 +154,5 @@ int main()
         }
     }
 
-    struct Rect mbr = {max_x, max_y, min_x, min_y};
+    Rect mbr = {max_x, max_y, min_x, min_y};
 }
