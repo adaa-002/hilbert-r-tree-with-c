@@ -80,8 +80,9 @@ int FindHilbertValue(Rect rectangle)
     rectangle.hilbertValue = hilbertValue;
     return hilbertValue;
 }
-RTreeNode find_LHV(int hilbertValue) // TO-DO
+RTreeNode find_AppChild(int hilbertValue) // TO-DO, pass node
 {
+    //traverse thro children and find one with least HV of the given node
 }
 RTreeNode chooseLeaf(Rect rectangle) // scope?
 {
@@ -93,6 +94,10 @@ RTreeNode chooseLeaf(Rect rectangle) // scope?
     // malloc
     RTreeNode N = tree.root;
 
+    // if not leaf
+    // find temp which is most appropriate child of N using lhv
+    // if that is a leaf return
+    // else do the same for its children
     do
     {
         if (N.isLeaf)
@@ -101,10 +106,10 @@ RTreeNode chooseLeaf(Rect rectangle) // scope?
         }
         else
         {
-            RTreeNode temp = find_LHV(rectangle.hilbertValue);
-            RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
-
-            N.data.internal.child[N.data.internal.numchildren] = temp.data.internal.child; // not 0
+            RTreeNode temp = find_AppChild(rectangle.hilbertValue);
+            //RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
+            //make a while loop while()
+            N.data.internal.child[N.data.internal.numchildren] = temp.data.internal.child[0]; // not 0, HAS TO BE CALLED RECURSIVELY, FIND TEMP'S CHILD WITH LEAST HV
             N.data.internal.numchildren++;                                                 // idk when leaf lol
         }
     } while (!N.isLeaf);
@@ -139,7 +144,10 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
     } while (temp->next != NULL);
 
 }
-
+RTreeNode HandleOverflow(L, newRectangle)
+{
+    ;
+}
 void insert(RTreeNode root, Rect newRectangle)
 {
     RTreeNode L = chooseLeaf(newRectangle); // malloc?
@@ -150,8 +158,14 @@ void insert(RTreeNode root, Rect newRectangle)
         if (L.rects->next == NULL)
         {
             addRectToNode(L, newRectangle, l_hv);
+            return L;
+        }
+        else
+        {
+            RTreeNode new_leaf= HandleOverflow(L, newRectangle);
         }
     }
+
 }
 
 // testing
