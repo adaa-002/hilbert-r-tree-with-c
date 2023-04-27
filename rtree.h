@@ -15,13 +15,12 @@ typedef struct rect
 {
     int xh, yh, xl, yl;
     int hilbertValue;
-    struct rect *next;
-} Rect;
-
+    struct rect* next;//no
+}Rect;
 typedef struct rTreeNode
 {
     int max_hv;
-    Rect* rects;
+    Rect* rects; //head
     bool isLeaf;
     //next?
     union

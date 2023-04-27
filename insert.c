@@ -7,9 +7,9 @@
 #define M 4
 #define m 2
 
-int *convertToBinary(int number) //tested
+int *convertToBinary(int number) // tested
 {
-    int* binary= (int*)malloc(8*sizeof(int));
+    int *binary = (int *)malloc(8 * sizeof(int));
     int bin = 0, i = 1, rem = 0;
     while (number != 0)
     {
@@ -32,9 +32,9 @@ int *convertToBinary(int number) //tested
     return binary;
 }
 
-int *createInterleaf(int x_binary[8], int y_binary[8]) //tested
+int *createInterleaf(int x_binary[8], int y_binary[8]) // tested
 {
-    int* interleafBinary= (int*)malloc(16*sizeof(int));
+    int *interleafBinary = (int *)malloc(16 * sizeof(int));
 
     for (int i = 0; i < 16; i++)
     {
@@ -50,7 +50,7 @@ int *createInterleaf(int x_binary[8], int y_binary[8]) //tested
     return interleafBinary;
 }
 
-int convertToDecimal(int *interleaf) //tested
+int convertToDecimal(int *interleaf) // tested
 {
     int hilbertValue = 0;
     for (int i = 15; i >= 0; i--)
@@ -63,12 +63,12 @@ int convertToDecimal(int *interleaf) //tested
     return hilbertValue;
 }
 
-void FindHilbertValue(Rect rectangle)
+int FindHilbertValue(Rect rectangle)
 {
     int x_mid = (rectangle.xh + rectangle.xl) / 2;
     int y_mid = (rectangle.yh + rectangle.yl) / 2;
 
-    //malloc not needed?
+    // malloc not needed?
 
     int *x_binary = convertToBinary(x_mid);
     int *y_binary = convertToBinary(y_mid);
@@ -78,42 +78,80 @@ void FindHilbertValue(Rect rectangle)
     int hilbertValue = convertToDecimal(interleaf);
 
     rectangle.hilbertValue = hilbertValue;
+    return hilbertValue;
 }
-RTreeNode find_LHV(int hilbertValue) //TO-DO
+RTreeNode find_LHV(int hilbertValue) // TO-DO
 {
-
 }
-RTreeNode chooseLeaf(Rect rectangle) //scope?
+RTreeNode chooseLeaf(Rect rectangle) // scope?
 {
-    //if the tree is empty
-    // set n to a leaf and return
+    // if the tree is empty
+    //  set n to a leaf and return
 
-    // else set N 
+    // else set N
 
-    //malloc
+    // malloc
     RTreeNode N = tree.root;
 
     do
     {
-        if (N.isLeaf){
-        return N;
-    }
-    else
-    {
-        RTreeNode temp = find_LHV(rectangle.hilbertValue);
-        RTreeNode *newChild=(RTreeNode*)malloc(sizeof(RTreeNode));
-        
-        N.data.internal.child[N.data.internal.numchildren] =temp.data.internal.child ; //not 0
-        N.data.internal.numchildren++; //idk when leaf lol
-    }
-    }while(!N.isLeaf);
+        if (N.isLeaf)
+        {
+            return N;
+        }
+        else
+        {
+            RTreeNode temp = find_LHV(rectangle.hilbertValue);
+            RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
+
+            N.data.internal.child[N.data.internal.numchildren] = temp.data.internal.child; // not 0
+            N.data.internal.numchildren++;                                                 // idk when leaf lol
+        }
+    } while (!N.isLeaf);
     return N;
+}
+
+void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
+{
+    Rect *curr, *temp;
+    temp = L.rects;
+    curr = L.rects;
+
+    do
+    {
+        temp++;
+
+        if (temp->hilbertValue > l_hv)
+        {
+            curr = &newRectangle;
+            newRectangle.next = temp;
+        }
+        else
+        {
+            curr = temp;
+        }
+
+        if (temp->next == NULL)
+        {
+            curr->next = &newRectangle;
+            newRectangle.next = NULL;
+        }
+    } while (temp->next != NULL);
+
 }
 
 void insert(RTreeNode root, Rect newRectangle)
 {
-    RTreeNode L = chooseLeaf (newRectangle); //malloc?
-    
+    RTreeNode L = chooseLeaf(newRectangle); // malloc?
+    int l_hv = FindHilbertValue(newRectangle);
+
+    for (int i = 0; i < M; i++)
+    {
+        if (L.rects->next == NULL)
+        {
+            addRectToNode(L, newRectangle, l_hv);
+        }
+    }
 }
 
 // testing
