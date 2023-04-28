@@ -38,7 +38,7 @@ typedef struct internalNode
 {
     int max_hv;
     Rect rect;                  
-    struct rTreeNode *child; //hell
+    struct rTreeNode *child[M]; //hell
     struct rTreeNode *next;
     bool isLeaf; // level
     int numchildren;

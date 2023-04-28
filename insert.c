@@ -63,6 +63,47 @@ int convertToDecimal(int *interleaf) // tested
     return hilbertValue;
 }
 
+int FindHilbertValueNode(Rect *rectangles)
+{
+    int temp, xmin, xmax, ymin, ymax;
+    xmin = rectangles->xl;
+    xmax = rectangles->xh;
+    ymin = rectangles->yl;
+    ymax = rectangles->yh;
+    do
+    {
+        rectangles++;
+        if (xmin > rectangles->xl)
+        {
+            xmin = rectangles->xl;
+        }
+        if (xmax < rectangles->xh)
+        {
+            xmax = rectangles->xh;
+        }
+        if (ymin > rectangles->yl)
+        {
+            ymin = rectangles->yl;
+        }
+        if (ymax < rectangles->yh)
+        {
+            ymax = rectangles->yh;
+        }
+    } while (rectangles != NULL);
+    int x_mid = (xmin+xmax) / 2;
+    int y_mid = (ymin+ymax) / 2;
+
+    // malloc not needed?
+
+    int *x_binary = convertToBinary(x_mid);
+    int *y_binary = convertToBinary(y_mid);
+
+    int *interleaf = createInterleaf(x_binary, y_binary);
+
+    int hilbertValue = convertToDecimal(interleaf);
+    return hilbertValue;
+
+}
 int FindHilbertValue(Rect rectangle)
 {
     int x_mid = (rectangle.xh + rectangle.xl) / 2;
@@ -80,11 +121,13 @@ int FindHilbertValue(Rect rectangle)
     rectangle.hilbertValue = hilbertValue;
     return hilbertValue;
 }
-RTreeNode find_AppChild(int hilbertValue) // TO-DO, pass node
-{
-    //traverse thro children and find one with least HV of the given node
-}
-RTreeNode chooseLeaf(Rect rectangle) // scope?
+RTreeNode find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
+    {
+        // traverse thro children and find one with least HV of the given node
+        
+       // N.data.internal.child
+
+    } RTreeNode chooseLeaf(Rect rectangle) // scope?
 {
     // if the tree is empty
     //  set n to a leaf and return
@@ -106,11 +149,11 @@ RTreeNode chooseLeaf(Rect rectangle) // scope?
         }
         else
         {
-            RTreeNode temp = find_AppChild(rectangle.hilbertValue);
-            //RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
-            //make a while loop while()
+            RTreeNode temp = find_AppChild(rectangle.hilbertValue, N);
+            // RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
+            // make a while loop while()
             N.data.internal.child[N.data.internal.numchildren] = temp.data.internal.child[0]; // not 0, HAS TO BE CALLED RECURSIVELY, FIND TEMP'S CHILD WITH LEAST HV
-            N.data.internal.numchildren++;                                                 // idk when leaf lol
+            N.data.internal.numchildren++;                                                    // idk when leaf lol
         }
     } while (!N.isLeaf);
     return N;
@@ -142,7 +185,6 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
             newRectangle.next = NULL;
         }
     } while (temp->next != NULL);
-
 }
 RTreeNode HandleOverflow(L, newRectangle)
 {
@@ -162,10 +204,9 @@ void insert(RTreeNode root, Rect newRectangle)
         }
         else
         {
-            RTreeNode new_leaf= HandleOverflow(L, newRectangle);
+            RTreeNode new_leaf = HandleOverflow(L, newRectangle);
         }
     }
-
 }
 
 // testing
