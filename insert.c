@@ -90,8 +90,8 @@ int FindHilbertValueNode(Rect *rectangles)
             ymax = rectangles->yh;
         }
     } while (rectangles != NULL);
-    int x_mid = (xmin+xmax) / 2;
-    int y_mid = (ymin+ymax) / 2;
+    int x_mid = (xmin + xmax) / 2;
+    int y_mid = (ymin + ymax) / 2;
 
     // malloc not needed?
 
@@ -102,7 +102,6 @@ int FindHilbertValueNode(Rect *rectangles)
 
     int hilbertValue = convertToDecimal(interleaf);
     return hilbertValue;
-
 }
 int FindHilbertValue(Rect rectangle)
 {
@@ -121,43 +120,46 @@ int FindHilbertValue(Rect rectangle)
     rectangle.hilbertValue = hilbertValue;
     return hilbertValue;
 }
-RTreeNode find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
-    {
-        // traverse thro children and find one with least HV of the given node
-        
-       // N.data.internal.child
+// RTreeNode* find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
+int find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
 
-    } RTreeNode chooseLeaf(Rect rectangle) // scope?
 {
-    // if the tree is empty
-    //  set n to a leaf and return
-
-    // else set N
-
-    // malloc
-    RTreeNode N = tree.root;
-
-    // if not leaf
-    // find temp which is most appropriate child of N using lhv
-    // if that is a leaf return
-    // else do the same for its children
+    // traverse thro children and find one with least HV of the given node
+    int i = 0, key;
+    int lhv = FindHilbertValueNode(N.data.internal.child[0]);
     do
     {
-        if (N.isLeaf)
+        int temp = FindHilbertValueNode(N.data.internal.child[i]);
+        if (temp < lhv)
         {
-            return N;
+            lhv = temp;
+            key = i;
         }
-        else
-        {
-            RTreeNode temp = find_AppChild(rectangle.hilbertValue, N);
-            // RTreeNode *newChild = (RTreeNode *)malloc(sizeof(RTreeNode));
-            // make a while loop while()
-            N.data.internal.child[N.data.internal.numchildren] = temp.data.internal.child[0]; // not 0, HAS TO BE CALLED RECURSIVELY, FIND TEMP'S CHILD WITH LEAST HV
-            N.data.internal.numchildren++;                                                    // idk when leaf lol
-        }
-    } while (!N.isLeaf);
-    return N;
+        i++;
+    } while (N.data.internal.child[i] != NULL);
+    return key;
+    // return &(N.data.internal.child[key]);
 }
+RTreeNode *chooseLeaf(Rect rectangle) // scope?
+{
+    RTreeNode *N = &tree.root;
+    RTreeNode *temp;
+    while (!N->isLeaf)
+    {
+        if (N->isLeaf)
+        {
+            return &N;
+        }
+
+        int key = find_AppChild(rectangle.hilbertValue, *N);
+
+        temp = N->data.internal.child[key];
+        N = temp;
+    }
+    return N;
+
+}
+
 
 void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
 {
@@ -192,14 +194,14 @@ RTreeNode HandleOverflow(L, newRectangle)
 }
 void insert(RTreeNode root, Rect newRectangle)
 {
-    RTreeNode L = chooseLeaf(newRectangle); // malloc?
+    RTreeNode* L = chooseLeaf(newRectangle); // malloc?
     int l_hv = FindHilbertValue(newRectangle);
 
     for (int i = 0; i < M; i++)
     {
-        if (L.rects->next == NULL)
+        if (L->rects->next == NULL)
         {
-            addRectToNode(L, newRectangle, l_hv);
+            addRectToNode(*L, newRectangle, l_hv);
             return L;
         }
         else
