@@ -6,7 +6,7 @@
 #include "rtree.h"
 #define M 4
 #define m 2
-//root's parent =NULL
+// root's parent =NULL
 int *convertToBinary(int number) // tested
 {
     int *binary = (int *)malloc(8 * sizeof(int));
@@ -122,7 +122,6 @@ int FindHilbertValue(Rect rectangle)
 }
 // RTreeNode* find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
 int find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
-
 {
     // traverse thro children and find one with least HV of the given node
     int i = 0, key;
@@ -186,14 +185,69 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
         }
     } while (temp->next != NULL);
 }
-RTreeNode* HandleOverflow(L, newRectangle) // start from here!
+RTreeNode *HandleOverflow(L, newRectangle) // start from here!
 {
     ;
+}
+
+void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
+{
+    RTreeNode *Np, *temp, *PP;
+
+    int full = 0;
+    // A1 what
+    if (NN->parent == NULL)
+    {
+        return NULL;
+    }
+
+    // A2
+    Np = N->parent;
+    if (NN != NULL)
+    {
+
+        if (Np->data.internal.child[0] == NULL || Np->data.internal.child[1] == NULL || Np->data.internal.child[2] == NULL || Np->data.internal.child[3] == NULL)
+        {
+            full = 1;
+        }
+
+        if (full)
+        {
+            PP = HandleOverflow(); // params
+        }
+        // insert NN in Np
+        int hv_Np = FindHilbertValueNode(Np->rects);
+        int key = find_AppChild(hv_Np, *Np); //??????
+
+        temp = Np->data.internal.child[key];
+        NN = temp;
+    }
+
+    // A3
+    RTreeNode *Np_parent, *Np_parent_child;
+
+    Np_parent = Np->parent;
+    int i = 0;
+    do
+    {
+        Np_parent_child = Np_parent->data.internal.child[i];
+        Np_parent_child->max_hv = FindHilbertValueNode(Np_parent_child->rects);
+        //adjust mbr, hilbertvalnode isnt reflecting final changes
+        i++;
+
+    } while (Np_parent_child != NULL); 
+
+    //A4
+    if(full)
+    {
+        NN=PP;
+    }
+
 }
 void insert(RTreeNode root, Rect newRectangle)
 {
     RTreeNode *L = chooseLeaf(newRectangle); // malloc?
-    RTreeNode* new_leaf;
+    RTreeNode *NN;
     int l_hv = FindHilbertValue(newRectangle);
 
     for (int i = 0; i < M; i++)
@@ -205,41 +259,9 @@ void insert(RTreeNode root, Rect newRectangle)
         }
         else
         {
-            new_leaf = HandleOverflow(L, newRectangle);//new leaf can be null that means same level siblings possible
+            NN = HandleOverflow(L, newRectangle); // new leaf can be null that means same level siblings possible
         }
     }
 
-    //propogate
-    AdjustTree(*L, sinblings, new_leaf)
+    // propogate
 }
-
-// testing
-
-// int main()
-// {
-//     int number1 = 15;
-//     int *test1 = convertToBinary(number1);
-//     for (int i = 0; i < 8; i++)
-//     {
-//         printf("%d ", test1[i]);
-//     }
-//     printf("\n");
-//     int number2 = 0;
-//     int *test2 = convertToBinary(number2);
-//     for (int i = 0; i < 8; i++)
-//     {
-//         printf("%d ", test2[i]);
-//     }
-//     printf("\n");
-
-//     int *interleaf = createInterleaf(test1, test2);
-//     for (int i = 0; i < 16; i++)
-//     {
-//         printf("%d ", interleaf[i]);
-//     }
-//     printf("\n");
-
-//     int hilbertValue = convertToDecimal(interleaf);
-//     printf("%d ", hilbertValue);
-//     printf("\n");
-// }
