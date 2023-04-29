@@ -23,6 +23,7 @@ typedef struct rTreeNode
     Rect* rects; //head
     bool isLeaf;
     //next?
+    RTreeNode* parent;
     union
     {
         LeafNode leaf;

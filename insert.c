@@ -6,7 +6,7 @@
 #include "rtree.h"
 #define M 4
 #define m 2
-
+//root's parent =NULL
 int *convertToBinary(int number) // tested
 {
     int *binary = (int *)malloc(8 * sizeof(int));
@@ -157,9 +157,7 @@ RTreeNode *chooseLeaf(Rect rectangle) // scope?
         N = temp;
     }
     return N;
-
 }
-
 
 void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
 {
@@ -188,13 +186,14 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
         }
     } while (temp->next != NULL);
 }
-RTreeNode HandleOverflow(L, newRectangle)
+RTreeNode* HandleOverflow(L, newRectangle) // start from here!
 {
     ;
 }
 void insert(RTreeNode root, Rect newRectangle)
 {
-    RTreeNode* L = chooseLeaf(newRectangle); // malloc?
+    RTreeNode *L = chooseLeaf(newRectangle); // malloc?
+    RTreeNode* new_leaf;
     int l_hv = FindHilbertValue(newRectangle);
 
     for (int i = 0; i < M; i++)
@@ -206,9 +205,12 @@ void insert(RTreeNode root, Rect newRectangle)
         }
         else
         {
-            RTreeNode new_leaf = HandleOverflow(L, newRectangle);
+            new_leaf = HandleOverflow(L, newRectangle);//new leaf can be null that means same level siblings possible
         }
     }
+
+    //propogate
+    AdjustTree(*L, sinblings, new_leaf)
 }
 
 // testing
