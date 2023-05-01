@@ -7,6 +7,7 @@
 #define M 4
 #define m 2
 // root's parent =NULL
+
 int *convertToBinary(int number) // tested
 {
     int *binary = (int *)malloc(8 * sizeof(int));
@@ -103,6 +104,7 @@ int FindHilbertValueNode(Rect *rectangles)
     int hilbertValue = convertToDecimal(interleaf);
     return hilbertValue;
 }
+
 int FindHilbertValue(Rect rectangle)
 {
     int x_mid = (rectangle.xh + rectangle.xl) / 2;
@@ -139,6 +141,7 @@ int find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
     return key;
     // return &(N.data.internal.child[key]);
 }
+
 RTreeNode *chooseLeaf(Rect rectangle) // scope?
 {
     RTreeNode *N = &tree.root;
@@ -185,9 +188,48 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
         }
     } while (temp->next != NULL);
 }
-RTreeNode *HandleOverflow(L, newRectangle) // start from here!
+
+RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
 {
-    ;
+    Rect Rects[17]; //array to store all the children rectangles
+    int count = 0;
+
+    RTreeNode *Parent = L->parent;
+
+    for (int i = 0; i < 4; i++) // traverse through all children of parent
+    {
+        for (int j = 0; j < Parent[i].numchildren; j++)
+        {
+            Rects[count] = Parent[i].rects[j];
+            count++;
+        }
+    }
+
+    Rects[count] = newRectangle; // add new rectangle to array
+    
+
+    mergeSort(Rects, 0, count); // sort rectangles
+
+    int x = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4 && x < count; j++) // add rectangles to children in asc order of HV
+        {
+            Parent[i].rects[j] = Rects[x];
+            x++;
+        }
+    }
+    if (count == 17)
+    {
+        RTreeNode *NN = createNode(Rects[16]); //When createNode is defined please handle the cases for creating Internal/Leaf nodes aptly.
+        NN->rects[0] = Rects[16]; //Add new rectangle to the newly created node
+        return NN;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
@@ -232,18 +274,18 @@ void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
     {
         Np_parent_child = Np_parent->data.internal.child[i];
         Np_parent_child->max_hv = FindHilbertValueNode(Np_parent_child->rects);
-        //adjust mbr, hilbertvalnode isnt reflecting final changes
+        // adjust mbr, hilbertvalnode isnt reflecting final changes
         i++;
 
-    } while (Np_parent_child != NULL); 
+    } while (Np_parent_child != NULL);
 
-    //A4
-    if(full)
+    // A4
+    if (full)
     {
-        NN=PP;
+        NN = PP;
     }
-
 }
+
 void insert(RTreeNode root, Rect newRectangle)
 {
     RTreeNode *L = chooseLeaf(newRectangle); // malloc?
@@ -264,4 +306,63 @@ void insert(RTreeNode root, Rect newRectangle)
     }
 
     // propogate
+}
+
+void merge(Rect arr[], int left, int mid, int right)
+{
+    int i, j, k;
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Rect L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = left;
+    while (i < n1 && j < n2)
+    {
+        if (L[i].hilbertValue <= R[j].hilbertValue)
+        {
+            arr[k] = L[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(Rect arr[], int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        merge(arr, left, mid, right);
+    }
 }
