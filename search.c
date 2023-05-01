@@ -1,3 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <math.h>
+#include "rtree.h"
+
 void preorder_traversal(RTreeNode* node) {
     if (node != NULL) {
         // Print the bounds of this node
