@@ -148,20 +148,20 @@ RTreeNode *chooseLeaf(Rect rectangle) // scope?
     RTreeNode *temp;
     while (!N->isLeaf)
     {
-        if (N->isLeaf)
-        {
-            return &N;
-        }
+        // if (N->isLeaf)
+        // {
+        //     return &N;
+        // }
 
         int key = find_AppChild(rectangle.hilbertValue, *N);
 
         temp = N->data.internal.child[key];
         N = temp;
     }
-    return N;
+    return &N;
 }
 
-void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
+void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv) //check logic
 {
     Rect *curr, *temp;
     temp = L.rects;
@@ -187,6 +187,65 @@ void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv)
             newRectangle.next = NULL;
         }
     } while (temp->next != NULL);
+}
+
+void merge(Rect arr[], int left, int mid, int right)
+{
+    int i, j, k;
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Rect L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = left;
+    while (i < n1 && j < n2)
+    {
+        if (L[i].hilbertValue <= R[j].hilbertValue)
+        {
+            arr[k] = L[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(Rect arr[], int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        merge(arr, left, mid, right);
+    }
 }
 
 RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
@@ -255,7 +314,7 @@ void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
 
         if (full)
         {
-            PP = HandleOverflow(); // params
+            PP = HandleOverflow(Np,*NN->rects); // params
         }
         // insert NN in Np
         int hv_Np = FindHilbertValueNode(Np->rects);
@@ -308,61 +367,3 @@ void insert(RTreeNode root, Rect newRectangle)
     // propogate
 }
 
-void merge(Rect arr[], int left, int mid, int right)
-{
-    int i, j, k;
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-
-    Rect L[n1], R[n2];
-
-    for (i = 0; i < n1; i++)
-        L[i] = arr[left + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[mid + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = left;
-    while (i < n1 && j < n2)
-    {
-        if (L[i].hilbertValue <= R[j].hilbertValue)
-        {
-            arr[k] = L[i];
-            i++;
-        }
-        else
-        {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    while (i < n1)
-    {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2)
-    {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-}
-
-void mergeSort(Rect arr[], int left, int right)
-{
-    if (left < right)
-    {
-        int mid = left + (right - left) / 2;
-
-        mergeSort(arr, left, mid);
-        mergeSort(arr, mid + 1, right);
-
-        merge(arr, left, mid, right);
-    }
-}

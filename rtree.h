@@ -18,22 +18,6 @@ typedef struct rect
     struct rect* next;
 }Rect;
 
-typedef struct rTreeNode
-{
-    int max_hv;
-    Rect* rects; //head
-    bool isLeaf;
-    RTreeNode* parent;
-    union
-    {
-        LeafNode leaf;
-        InternalNode internal;
-    } data;
-   
-    int numchildren;
-    // tuple id
-} RTreeNode;
-
 typedef struct internalNode
 {
     int max_hv;
@@ -51,6 +35,24 @@ typedef struct leafNode
     Rect *rect[M];
     //Point* childOfleaf;
 } LeafNode;
+
+typedef struct rTreeNode
+{
+    int max_hv;
+    Rect* rects; //head
+    bool isLeaf;
+    struct rTreeNode* parent;
+    union
+    {
+        struct leafNode leaf;
+        struct internalNode internal;
+    } data;
+   
+    int numchildren;
+    // tuple id
+} RTreeNode;
+
+
 
 typedef struct rTree
 {
