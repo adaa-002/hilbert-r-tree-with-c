@@ -373,12 +373,25 @@ void insert(RTreeNode root, Rect newRectangle)
     AdjustTree(L, NN);
 
     RTreeNode *new_root = (RTreeNode *)malloc(sizeof(RTreeNode));
-
-    if (1) // root split condition
+    bool root_split=true;
+    if (root_split) 
     {
-        tree.root = *new_root;
-        // new_root->data.internal.child[0] = ;
-        // new_root->data.internal.child[1] = ;
+        
+        new_root->data.internal.child[0] = &tree.root;
+        new_root->data.internal.child[1] = &NN;
         new_root->parent = NULL;
+        tree.root = *new_root;
     }
+}
+
+int main(){
+    RTreeNode* root= (RTreeNode*)malloc(sizeof(RTreeNode));
+    // root = tree.root;
+    root->parent=NULL;
+    Rect* rect = (Rect*)malloc(sizeof(Rect)); 
+    rect->xh=1;
+    rect->xl=1;
+    rect->yh=2;
+    rect->yl=2;
+    insert(*root,*rect);
 }
