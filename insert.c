@@ -250,49 +250,47 @@ void mergeSort(Rect arr[], int left, int right)
     }
 }
 
-RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
+RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle)
 {
-    Rect Rects[17]; // array to store all the children rectangles
-    int count = 0;
+    
+    Rect Rects[M + 1];
+    int count = 0; 
 
     RTreeNode *Parent = L->parent;
 
-    for (int i = 0; i < Parent->numchildren; i++) // traverse through all children of parent
+    for (int i = 0; i < M; i++)
     {
-        for (int j = 0; j < Parent[i].numchildren; j++)
+        if (Parent->data.internal.child[i] != NULL) // 
         {
-            Rects[count] = Parent[i].rects[j];
+            Rects[count] = Parent->data.internal.child[i]->rects[0];       //
             count++;
         }
     }
 
-     Rects[count] = newRectangle; // add new rectangle to array
+    Rects[count] = newRectangle;
+    count++;
 
-    if (Parent->numchildren!=M)
-    {   Parent[Parent->numchildren+1]->rects = newRectangle;
-        Parent->numchildren++;
-        mergeSort(Parent->rects, 0, Parent->numchildren); 
-    }
-
-   
-
-    mergeSort(Rects, 0, count); // sort rectangles
+    mergeSort(Rects, 0, count - 1);
 
     int x = 0;
 
-    for (int i = 0; i < Parent->numchildren; i++)
+    for (int i = 0; i < M; i++)
     {
-        for (int j = 0; j < Parent[i].numchildren && x < count; j++) // add rectangles to children in asc order of HV
+        if (Parent->data.internal.child[i] != NULL)
         {
-            Parent[i].rects[j] = Rects[x];
+            Parent->data.internal.child[i]->rects[0] = Rects[x];
             x++;
         }
     }
-    if (count == 17)
+
+    if (count == M + 1)
     {
-        RTreeNode *NN;
-        NN->rects[0] = Rects[16]; //Add new rectangle to the newly created node
-        NN->parent = Parent; //Add newly created node to Parent
+        RTreeNode *NN = (RTreeNode *)malloc(sizeof(RTreeNode));
+        NN->rects = (Rect *)malloc(sizeof(Rect));
+        NN->rects[0] = Rects[M];
+        NN->parent = Parent;
+        NN->isLeaf = true;
+        NN->numchildren = 1;
         return NN;
     }
     else
