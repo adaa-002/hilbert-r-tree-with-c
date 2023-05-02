@@ -255,7 +255,7 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
 
     RTreeNode *Parent = L->parent;
 
-    for (int i = 0; i < 4; i++) // traverse through all children of parent
+    for (int i = 0; i < Parent->numchildren; i++) // traverse through all children of parent
     {
         for (int j = 0; j < Parent[i].numchildren; j++)
         {
@@ -264,15 +264,23 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
         }
     }
 
-    Rects[count] = newRectangle; // add new rectangle to array
+     Rects[count] = newRectangle; // add new rectangle to array
+
+    if (Parent->numchildren!=M)
+    {   Parent[Parent->numchildren+1]->rects = newRectangle;
+        Parent->numchildren++;
+        mergeSort(Parent->rects, 0, Parent->numchildren); 
+    }
+
+   
 
     mergeSort(Rects, 0, count); // sort rectangles
 
     int x = 0;
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < Parent->numchildren; i++)
     {
-        for (int j = 0; j < 4 && x < count; j++) // add rectangles to children in asc order of HV
+        for (int j = 0; j < Parent[i].numchildren && x < count; j++) // add rectangles to children in asc order of HV
         {
             Parent[i].rects[j] = Rects[x];
             x++;
@@ -280,8 +288,9 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
     }
     if (count == 17)
     {
-        RTreeNode *NN = createNode(Rects[16]); // When createNode is defined please handle the cases for creating Internal/Leaf nodes aptly.
-        NN->rects[0] = Rects[16];              // Add new rectangle to the newly created node
+        RTreeNode *NN;
+        NN->rects[0] = Rects[16]; //Add new rectangle to the newly created node
+        NN->parent = Parent; //Add newly created node to Parent
         return NN;
     }
     else
