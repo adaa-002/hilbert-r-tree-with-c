@@ -286,50 +286,64 @@ void mergeSort(Rect arr[], int left, int right)
 
 RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle)
 {
-    Rect Rects[17]; // array to store all the children rectangles
+    // Create an array of Rect objects with size M + 1
+    Rect Rects[M + 1];
     int count = 0;
 
     RTreeNode *Parent = L->parent;
 
-    for (int i = 0; i < Parent->numchildren; i++) // traverse through all children of parent
+    // Iterate over all the children of the parent node
+    for (int i = 0; i < M; i++)
     {
-        for (int j = 0; j < Parent[i].numchildren; j++)
+        // If the current child is not NULL
+        if (Parent->data.internal.child[i] != NULL)
         {
-            Rects[count] = Parent[i].rects[j];
+            // Add its first rectangle to the Rects array
+            Rects[count] = Parent->data.internal.child[i]->rects[0];
+            // Increment the counter variable
             count++;
         }
     }
 
-    Rects[count] = newRectangle; // add new rectangle to array
+    // Add the new rectangle to the Rects array
+    Rects[count] = newRectangle;
+    count++;
 
-    if (Parent->numchildren != M)
-    {
-        Parent[Parent->numchildren + 1]->rects = newRectangle;
-        Parent->numchildren++;
-        mergeSort(Parent->rects, 0, Parent->numchildren);
-    }
-
-    mergeSort(Rects, 0, count); // sort rectangles
+    // Sort the Rects array using mergeSort
+    mergeSort(Rects, 0, count - 1);
 
     int x = 0;
 
-    for (int i = 0; i < Parent->numchildren; i++)
+    // Iterate over all the children of the parent node again
+    for (int i = 0; i < M; i++)
     {
-        for (int j = 0; j < Parent[i].numchildren && x < count; j++) // add rectangles to children in asc order of HV
+        // If the current child is not NULL
+        if (Parent->data.internal.child[i] != NULL)
         {
-            Parent[i].rects[j] = Rects[x];
+            // Update its first rectangle with the next rectangle from the sorted Rects array
+            Parent->data.internal.child[i]->rects[0] = Rects[x];
             x++;
         }
     }
-    if (count == 17)
+
+    // If count is equal to M + 1, meaning there was an overflow
+    if (count == M + 1)
     {
-        RTreeNode *NN;
-        NN->rects[0] = Rects[16]; // Add new rectangle to the newly created node
-        NN->parent = Parent;      // Add newly created node to Parent
+        // Create a new RTreeNode object and allocate memory for it and its rects field
+        RTreeNode *NN = (RTreeNode *)malloc(sizeof(RTreeNode));
+        NN->rects = (Rect *)malloc(sizeof(Rect));
+        // Set its first rectangle to be the last rectangle in the sorted Rects array
+        NN->rects[0] = Rects[M];
+        // Set its parent to be the same as L's parent
+        NN->parent = Parent;
+        // Set its isLeaf field to true and its numchildren field to 1
+        NN->isLeaf = true;
+        NN->numchildren = 1;
         return NN;
     }
     else
     {
+        //  If there was no overflow, return NULL
         return NULL;
     }
 }
@@ -467,9 +481,38 @@ void search(RTreeNode *node, Rect search_this_rect)
     }
 }
 
+void preorder(RTreeNode *node)
+{
+    if (node != NULL)
+    {
+
+        printf("This is an internal node");
+        printf("%d %d %d %d", node->data.internal.rect.xh, node->data.internal.rect.yh,
+               node->data.internal.rect.xl, node->data.internal.rect.yl);
+
+        if (node->isLeaf == true)
+        {
+            for (int i = 0; i <= node->data.leaf.max_hv; i++)
+            {
+                printf("This is a leaf node");
+                printf("(%d,%d)\n", node->data.leaf.rect[i]->xh, node->data.leaf.rect[i]->yh);
+            }
+        }
+        else
+        {
+            for (int i = 0; i <= node->data.internal.max_hv; i++)
+            {
+                preorder(node->data.internal.child[i]);
+            }
+        }
+    }
+}
+
 int main()
 {
-    FILE *fp = fopen("data.txt", "r");
+    char filename[30];
+    scanf("Enter the filename (eg: data.txt) %s\n", filename);
+    FILE *fp = fopen(filename, "r");
 
     if (fp == NULL)
     {
@@ -478,7 +521,7 @@ int main()
     }
 
     RTreeNode *root = (RTreeNode *)malloc(sizeof(RTreeNode));
-    root = tree.root;
+    root = &tree.root;
     int x, y;
     while (fscanf(fp, "%d %d", &x, &y) != EOF)
     {
@@ -487,31 +530,32 @@ int main()
         rectToInsert->xl = x;
         rectToInsert->yh = y;
         rectToInsert->yl = y;
-        insert(x, y)
+        insert(*root, *rectToInsert);
     }
     fclose(fp);
 
     printf("Chose an option from the below menu \n");
     printf("1. Insertion: Give a new rectangle to add to the RTree, in the format of xmin, xmax, ymin and ymax\n");
     printf("2. Search: Give a reactangle in the format of xmin, xmax, ymin and ymax to search for \n");
-    printf("3. PreOrderTraversal : Prints the R Tree") int option;
-    scanf("Enter your option (1,2,3): %d \n", option);
+    printf("3. PreOrderTraversal : Prints the R Tree");
+    int option;
+    scanf("Enter your option (1,2,3): %d \n", &option);
 
     switch (option)
     {
     case 1:
         Rect *rectToInsert = (Rect *)malloc(sizeof(Rect));
-        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", rectToInsert->xl, rectToInsert->xh, rectToInsert->yl, rectToInsert->yh);
-        insert(root, rectToInsert);
+        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", &rectToInsert->xl, &rectToInsert->xh, &rectToInsert->yl, &rectToInsert->yh);
+        insert(*root, *rectToInsert);
         break;
 
     case2:
         Rect *rectToSearch = (Rect *)malloc(sizeof(Rect));
-        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", rectToSearch->xl, rectToSearch->xh, rectToSearch->yl, rectToSearch->yh);
-        search(root,rectToSearch);
+        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", &rectToSearch->xl, &rectToSearch->xh, &rectToSearch->yl, &rectToSearch->yh);
+        search(root, *rectToSearch);
         break;
     case3:
         preorder(root);
-        break:
+        break;
     }
 }
