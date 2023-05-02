@@ -15,7 +15,7 @@ typedef struct rect
 {
     int xh, yh, xl, yl;
     int hilbertValue;
-    struct rect* next; //no // I don't think we need this anywhere -Bharat
+    struct rect* next;
 }Rect;
 
 typedef struct rTreeNode
@@ -23,7 +23,6 @@ typedef struct rTreeNode
     int max_hv;
     Rect* rects; //head
     bool isLeaf;
-    //next?
     RTreeNode* parent;
     union
     {
@@ -33,7 +32,6 @@ typedef struct rTreeNode
    
     int numchildren;
     // tuple id
-    // parent
 } RTreeNode;
 
 typedef struct internalNode
@@ -45,8 +43,6 @@ typedef struct internalNode
     bool isLeaf; // level
     int numchildren;  //we need this field, please update this in the insert function
     // tuple id
-    // parent
-
 } InternalNode;
 
 typedef struct leafNode
