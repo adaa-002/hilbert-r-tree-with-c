@@ -4,21 +4,22 @@
 #include <stdbool.h>
 #include <math.h>
 #include "rtree.h"
-void pre_order_traversal(RTreeNode* node) {
+void preorder(RTreeNode* node) {
     if (node != NULL) {
-        // Print the bounds of this node
-        printf("[");
-        printf("%d %d %d %d", node->data.internal.rect.xh, node->data.internal.rect.yh, node->data.internal.rect.xl, node->data.internal.rect.yl);
-        printf("]\n");
-        // Recursively traverse the children of this node
+        
+        printf("This is an internal node");
+        printf("%d %d %d %d", node->data.internal.rect.xh, node->data.internal.rect.yh,
+                node->data.internal.rect.xl, node->data.internal.rect.yl);
+        
         if (node->isLeaf == true) {
-            for (int i = 0; i < node->data.leaf.max_hv + 1; i++) {
-                printf("    (%d,%d)\n", node->data.leaf.rect.xh, node->data.leaf.rect.yh);
+            for (int i = 0; i <= node->data.leaf.max_hv; i++) {
+                printf("This is a leaf node");
+                printf("(%d,%d)\n", node->data.leaf.rect[i]->xh, node->data.leaf.rect[i]->yh);
             }
         }
         else {
-            for (int i = 0; i < node->data.internal.max_hv + 1; i++) {
-                pre_order_traversal(node->data.internal.child[i]);
+            for (int i = 0; i <= node->data.internal.max_hv ; i++) {
+                preorder(node->data.internal.child[i]);
             }
         }
     }
