@@ -252,49 +252,70 @@ void mergeSort(Rect arr[], int left, int right)
 
 RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle)
 {
-    
+    // Create an array of Rect objects with size M + 1
     Rect Rects[M + 1];
-    int count = 0; 
+    // Initialize a counter variable to 0
+    int count = 0;
 
+    // Get the parent of the input node L
     RTreeNode *Parent = L->parent;
 
+    // Iterate over all the children of the parent node
     for (int i = 0; i < M; i++)
     {
-        if (Parent->data.internal.child[i] != NULL) // 
+        // If the current child is not NULL
+        if (Parent->data.internal.child[i] != NULL)
         {
-            Rects[count] = Parent->data.internal.child[i]->rects[0];       //
+            // Add its first rectangle to the Rects array
+            Rects[count] = Parent->data.internal.child[i]->rects[0];
+            // Increment the counter variable
             count++;
         }
     }
 
+    // Add the new rectangle to the Rects array
     Rects[count] = newRectangle;
+    // Increment the counter variable
     count++;
 
+    // Sort the Rects array using mergeSort
     mergeSort(Rects, 0, count - 1);
 
+    // Initialize a variable x to 0
     int x = 0;
 
+    // Iterate over all the children of the parent node again
     for (int i = 0; i < M; i++)
     {
+        // If the current child is not NULL
         if (Parent->data.internal.child[i] != NULL)
         {
+            // Update its first rectangle with the next rectangle from the sorted Rects array
             Parent->data.internal.child[i]->rects[0] = Rects[x];
+            // Increment x
             x++;
         }
     }
 
+    // If count is equal to M + 1, meaning there was an overflow
     if (count == M + 1)
     {
+        // Create a new RTreeNode object and allocate memory for it and its rects field
         RTreeNode *NN = (RTreeNode *)malloc(sizeof(RTreeNode));
         NN->rects = (Rect *)malloc(sizeof(Rect));
+        // Set its first rectangle to be the last rectangle in the sorted Rects array
         NN->rects[0] = Rects[M];
+        // Set its parent to be the same as L's parent
         NN->parent = Parent;
+        // Set its isLeaf field to true and its numchildren field to 1
         NN->isLeaf = true;
         NN->numchildren = 1;
+        // Return the new node
         return NN;
     }
     else
     {
+        // If there was no overflow, return NULL
         return NULL;
     }
 }
@@ -380,10 +401,10 @@ void insert(RTreeNode root, Rect newRectangle)
     AdjustTree(L, NN);
 
     RTreeNode *new_root = (RTreeNode *)malloc(sizeof(RTreeNode));
-    bool root_split=true;
-    if (root_split) 
+    bool root_split = true;
+    if (root_split)
     {
-        
+
         new_root->data.internal.child[0] = &tree.root;
         new_root->data.internal.child[1] = &NN;
         new_root->parent = NULL;
@@ -391,14 +412,15 @@ void insert(RTreeNode root, Rect newRectangle)
     }
 }
 
-int main(){
-    RTreeNode* root= (RTreeNode*)malloc(sizeof(RTreeNode));
+int main()
+{
+    RTreeNode *root = (RTreeNode *)malloc(sizeof(RTreeNode));
     // root = tree.root;
-    root->parent=NULL;
-    Rect* rect = (Rect*)malloc(sizeof(Rect)); 
-    rect->xh=1;
-    rect->xl=1;
-    rect->yh=2;
-    rect->yl=2;
-    insert(*root,*rect);
+    root->parent = NULL;
+    Rect *rect = (Rect *)malloc(sizeof(Rect));
+    rect->xh = 1;
+    rect->xl = 1;
+    rect->yh = 2;
+    rect->yl = 2;
+    insert(*root, *rect);
 }
