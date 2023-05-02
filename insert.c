@@ -315,7 +315,7 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle)
     }
     else
     {
-        // If there was no overflow, return NULL
+        //  If there was no overflow, return NULL
         return NULL;
     }
 }
