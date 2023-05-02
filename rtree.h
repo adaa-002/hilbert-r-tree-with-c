@@ -6,10 +6,10 @@
 #define M 4
 #define m 2
 
-typedef struct point
-{
-    int x, y;
-} Point;
+// typedef struct point
+// {
+//     int x, y;
+// } Point;
 
 typedef struct rect
 {
@@ -42,23 +42,20 @@ typedef struct rTreeNode
     Rect* rects; //head
     bool isLeaf;
     struct rTreeNode* parent;
+    int numchildren;
     union
     {
         struct leafNode leaf;
         struct internalNode internal;
     } data;
-   
-    int numchildren;
     // tuple id
 } RTreeNode;
-
-
 
 typedef struct rTree
 {
     RTreeNode root; // ptr?
     int num_nodes;
-    int split_distribution;
+    // int split_distribution;
     // height
 } RTree;
 

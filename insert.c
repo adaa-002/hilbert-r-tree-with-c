@@ -122,7 +122,7 @@ int FindHilbertValue(Rect rectangle)
     rectangle.hilbertValue = hilbertValue;
     return hilbertValue;
 }
-// RTreeNode* find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
+
 int find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
 {
     // traverse thro children and find one with least HV of the given node
@@ -142,10 +142,12 @@ int find_AppChild(int hilbertValue, RTreeNode N) // TO-DO, pass node
     // return &(N.data.internal.child[key]);
 }
 
-RTreeNode *chooseLeaf(Rect rectangle) // scope?
+RTreeNode *chooseLeaf(Rect rectangle)
 {
-    RTreeNode *N = &tree.root;
-    RTreeNode *temp;
+    RTreeNode *N = (RTreeNode *)malloc(sizeof(RTreeNode));
+    N = &tree.root;
+
+    RTreeNode *temp = (RTreeNode *)malloc(sizeof(RTreeNode));
     while (!N->isLeaf)
     {
         // if (N->isLeaf)
@@ -292,62 +294,68 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
 
 void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
 {
-    RTreeNode *Np, *temp, *PP;
+    RTreeNode *Np = (RTreeNode *)malloc(sizeof(RTreeNode));
+    RTreeNode *temp = (RTreeNode *)malloc(sizeof(RTreeNode));
+    RTreeNode *PP = (RTreeNode *)malloc(sizeof(RTreeNode));
 
     int full = 0;
-    // A1 what
-    if (NN->parent == NULL)
-    {
-        return;
-    }
 
-    // A2
-    Np = N->parent;
-    if (NN != NULL)
+    while (NN->parent != NULL)
     {
-
-        if (Np->data.internal.child[0] == NULL || Np->data.internal.child[1] == NULL || Np->data.internal.child[2] == NULL || Np->data.internal.child[3] == NULL)
+        // A1
+        if (NN->parent == NULL)
         {
-            full = 1;
+            return;
         }
 
+        // A2
+        Np = N->parent;
+        if (NN != NULL)
+        {
+
+            if (Np->data.internal.child[0] == NULL || Np->data.internal.child[1] == NULL || Np->data.internal.child[2] == NULL || Np->data.internal.child[3] == NULL)
+            {
+                full = 1;
+            }
+
+            if (full)
+            {
+                PP = HandleOverflow(Np, *NN->rects); // params
+            }
+            // insert NN in Np
+            int hv_Np = FindHilbertValueNode(Np->rects);
+            int key = find_AppChild(hv_Np, *Np); //??????
+
+            temp = Np->data.internal.child[key];
+            NN = temp;
+        }
+
+        // A3
+        RTreeNode *Np_parent, *Np_parent_child;
+
+        Np_parent = Np->parent;
+        int i = 0;
+        do
+        {
+            Np_parent_child = Np_parent->data.internal.child[i];
+            Np_parent_child->max_hv = FindHilbertValueNode(Np_parent_child->rects);
+            // adjust mbr, hilbertvalnode isnt reflecting final changes
+            i++;
+
+        } while (Np_parent_child != NULL);
+
+        // A4
         if (full)
         {
-            PP = HandleOverflow(Np, *NN->rects); // params
+            NN = PP;
         }
-        // insert NN in Np
-        int hv_Np = FindHilbertValueNode(Np->rects);
-        int key = find_AppChild(hv_Np, *Np); //??????
-
-        temp = Np->data.internal.child[key];
-        NN = temp;
-    }
-
-    // A3
-    RTreeNode *Np_parent, *Np_parent_child;
-
-    Np_parent = Np->parent;
-    int i = 0;
-    do
-    {
-        Np_parent_child = Np_parent->data.internal.child[i];
-        Np_parent_child->max_hv = FindHilbertValueNode(Np_parent_child->rects);
-        // adjust mbr, hilbertvalnode isnt reflecting final changes
-        i++;
-
-    } while (Np_parent_child != NULL);
-
-    // A4
-    if (full)
-    {
-        NN = PP;
     }
 }
 
 void insert(RTreeNode root, Rect newRectangle)
 {
-    RTreeNode *L = chooseLeaf(newRectangle); // malloc?
-    RTreeNode *NN;
+    RTreeNode *L = chooseLeaf(newRectangle);
+    RTreeNode *NN = (RTreeNode *)malloc(sizeof(RTreeNode));
     int l_hv = FindHilbertValue(newRectangle);
 
     for (int i = 0; i < M; i++)
@@ -364,14 +372,13 @@ void insert(RTreeNode root, Rect newRectangle)
     }
     AdjustTree(L, NN);
 
-    RTreeNode *new_root;
-   
-    if (1)  // root split condition
+    RTreeNode *new_root = (RTreeNode *)malloc(sizeof(RTreeNode));
+
+    if (1) // root split condition
     {
         tree.root = *new_root;
-        new_root->data.internal.child[0]=;
-        new_root->data.internal.child[1]=;
-        new_root->parent=NULL;
-
+        // new_root->data.internal.child[0] = ;
+        // new_root->data.internal.child[1] = ;
+        new_root->parent = NULL;
     }
 }
