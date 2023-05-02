@@ -161,7 +161,7 @@ RTreeNode *chooseLeaf(Rect rectangle) // scope?
     return &N;
 }
 
-void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv) //check logic
+void addRectToNode(RTreeNode L, Rect newRectangle, int l_hv) // check logic
 {
     Rect *curr, *temp;
     temp = L.rects;
@@ -250,7 +250,7 @@ void mergeSort(Rect arr[], int left, int right)
 
 RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
 {
-    Rect Rects[17]; //array to store all the children rectangles
+    Rect Rects[17]; // array to store all the children rectangles
     int count = 0;
 
     RTreeNode *Parent = L->parent;
@@ -265,7 +265,6 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
     }
 
     Rects[count] = newRectangle; // add new rectangle to array
-    
 
     mergeSort(Rects, 0, count); // sort rectangles
 
@@ -281,8 +280,8 @@ RTreeNode *HandleOverflow(RTreeNode *L, Rect newRectangle) // start from here!
     }
     if (count == 17)
     {
-        RTreeNode *NN = createNode(Rects[16]); //When createNode is defined please handle the cases for creating Internal/Leaf nodes aptly.
-        NN->rects[0] = Rects[16]; //Add new rectangle to the newly created node
+        RTreeNode *NN = createNode(Rects[16]); // When createNode is defined please handle the cases for creating Internal/Leaf nodes aptly.
+        NN->rects[0] = Rects[16];              // Add new rectangle to the newly created node
         return NN;
     }
     else
@@ -299,7 +298,7 @@ void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
     // A1 what
     if (NN->parent == NULL)
     {
-        return NULL;
+        return;
     }
 
     // A2
@@ -314,7 +313,7 @@ void AdjustTree(RTreeNode *N, RTreeNode *NN) // not sure about l/n
 
         if (full)
         {
-            PP = HandleOverflow(Np,*NN->rects); // params
+            PP = HandleOverflow(Np, *NN->rects); // params
         }
         // insert NN in Np
         int hv_Np = FindHilbertValueNode(Np->rects);
@@ -356,14 +355,23 @@ void insert(RTreeNode root, Rect newRectangle)
         if (L->rects->next == NULL)
         {
             addRectToNode(*L, newRectangle, l_hv);
-            return L;
+            // return L;
         }
         else
         {
             NN = HandleOverflow(L, newRectangle); // new leaf can be null that means same level siblings possible
         }
     }
+    AdjustTree(L, NN);
 
-    // propogate
+    RTreeNode *new_root;
+   
+    if (1)  // root split condition
+    {
+        tree.root = *new_root;
+        new_root->data.internal.child[0]=;
+        new_root->data.internal.child[1]=;
+        new_root->parent=NULL;
+
+    }
 }
-
