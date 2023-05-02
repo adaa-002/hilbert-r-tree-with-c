@@ -511,7 +511,8 @@ void preorder(RTreeNode *node)
 int main()
 {
     char filename[30];
-    scanf("Enter the filename (eg: data.txt) %s\n", filename);
+    printf("Enter the filename (eg: data.txt)\n");
+    scanf("%s\n", filename);
     FILE *fp = fopen(filename, "r");
 
     if (fp == NULL)
@@ -523,9 +524,10 @@ int main()
     RTreeNode *root = (RTreeNode *)malloc(sizeof(RTreeNode));
     root = &tree.root;
     int x, y;
+    Rect *rectToInsert = (Rect *)malloc(sizeof(Rect));
+
     while (fscanf(fp, "%d %d", &x, &y) != EOF)
     {
-        Rect *rectToInsert = (Rect *)malloc(sizeof(Rect));
         rectToInsert->xh = x;
         rectToInsert->xl = x;
         rectToInsert->yh = y;
@@ -540,17 +542,17 @@ int main()
     printf("3. PreOrderTraversal : Prints the R Tree");
     int option;
     scanf("Enter your option (1,2,3): %d \n", &option);
+    Rect *rectToInsert2 = (Rect *)malloc(sizeof(Rect));
+    Rect *rectToSearch = (Rect *)malloc(sizeof(Rect));
 
     switch (option)
     {
     case 1:
-        Rect *rectToInsert = (Rect *)malloc(sizeof(Rect));
-        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", &rectToInsert->xl, &rectToInsert->xh, &rectToInsert->yl, &rectToInsert->yh);
-        insert(*root, *rectToInsert);
+        scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", &rectToInsert2->xl, &rectToInsert2->xh, &rectToInsert2->yl, &rectToInsert2->yh);
+        insert(*root, *rectToInsert2);
         break;
 
     case2:
-        Rect *rectToSearch = (Rect *)malloc(sizeof(Rect));
         scanf("Enter xmin, xmax, ymin, ymax %d%d%d%d", &rectToSearch->xl, &rectToSearch->xh, &rectToSearch->yl, &rectToSearch->yh);
         search(root, *rectToSearch);
         break;
